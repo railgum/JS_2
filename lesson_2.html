@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AJAX</title>
+</head>
+<style>
+  div {
+    margin: 50px 100px;
+  }
+</style>
+<body>
+  <button id="btn">Показать фото</button>
+
+  <script type="text/javascript">
+    var req = new XMLHttpRequest()
+
+    req.onreadystatechange = function() {
+      if (req.readyState == 4 && req.status == 200) {
+        var data = JSON.parse(req.responseText);
+
+        // JSON.stringify(obj) -> JSON.parse(str)
+
+        // console.log(req.responseText)
+        console.log('---------------------');
+        console.log(data);
+
+        var div = document.createElement('div');
+        var img = "<img src=" + data.message + ">";
+        console.log(img);
+        
+        div.innerHTML = img;
+        document.body.appendChild(div);
+      }
+    }
+
+    var user = {
+      login: "Вася",
+      password: "baraban",
+      age: 29,
+      email: "ghot@gmail.com"
+    };
+
+    var str = JSON.stringify(user);
+    console.log(str);
+
+    btn.onclick = function(e) {
+      var clearImg = document.getElementsByTagName('div');
+      console.log(clearImg[0]);
+      if(clearImg[0]) {
+        document.body.removeChild(clearImg[0]);
+      }
+      
+      req.open('GET', 'https://dog.ceo/api/breeds/image/random');
+
+      req.send();
+    }
+
+    
+
+
+    // Преобразовать объект с данными пользователя в JSON
+
+    // Сделать AJAX-запрос к любому публичному API.
+    // И обработать полученную информацию
+
+    // https://github.com/toddmotto/public-apis
+
+
+
+  </script>
+</body>
+</html>
