@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title> </title>
+	<style>
+		
+	</style>
+	<script>
+
+// основной класс
+
+		function Container() {
+			this.id = "";
+			this.className= "";
+			this.htmlCode = "";
+		}
+
+		Container.prototype.render = function()	{
+			return this.htmlCode;
+		}
+		Container.prototype.remove = function() {
+			return document.body.innerHTML = "";
+		}
+
+// класс-потомок, реализующий метод "меню"
+
+		function Menu(my_id, my_class, my_items) {
+			Container.call(this);
+		  	this.id = my_id;
+				this.className = my_class;
+				this.items = my_items;
+		}
+
+		Menu.prototype = Object.create(Container.prototype);
+		Menu.prototype.constructor = Menu;
+		// Menu.prototype.render = function() {
+
+		// }
+		var menu = new Menu("my_menu", "menu_class", {});
+		// console.log(menu.render());
+
+// создание пунктов меню
+
+		function MenuItem(my_href, my_name){
+			Container.call(this);
+			this.className = "menu-item";
+			this.href = my_href;
+			this.name = my_name;
+		}
+
+		MenuItem.prototype = Object.create(Container.prototype);
+		MenuItem.prototype.constructor = MenuItem;
+		MenuItem.prototype.render = function(){
+			return "<li class='" + this.className + "'>" + "<a href='"+ this.href +"'>" + this.name + "</a>" + "</li>";
+		}
+
+// создание класса меню с вложениями
+
+	function SubMenu(my_class, my_items) {
+		Container.call(this);
+		this.className = my_class;
+		this.items = my_items;
+		console.log(this.items);
+	}
+
+	SubMenu.prototype = Object.create(Container.prototype);
+	SubMenu.prototype.constructor = SubMenu;
+	SubMenu.prototype.render = function() {
+		return "<ul class='" + this.className + "'>" + this.items + "</ul>";
+	}
+
+// 
+
+// создание меню
+
+	var m_item1 = new MenuItem("#", "Каталог");
+	// console.log(MenuItem.prototype.render());
+	var sub_item1 = new SubMenu("sub_menu_class", MenuItem.prototype.render.call(MenuItem("#","Армированные")));
+	var sub_item2 = new SubMenu("sub_menu_class", MenuItem.prototype.render.call(MenuItem("#","Неармированные")));
+	var sub_item3 = new SubMenu("sub_menu_class", MenuItem.prototype.render.call(MenuItem("#","Полиуретановые")));
+
+	var m_item2 = new MenuItem("#", "Галерея");
+	
+
+	var m_item3 = new MenuItem("#", "Акции");
+	var m_item4 = new MenuItem("#", "Личный кабинет");
+
+	var m_items = {0: m_item1, 1: sub_item1, 2:sub_item2, 3:sub_item3, 4: m_item2, 5: m_item3, 6: m_item4};
+
+// передача пунктов меню в само меню
+
+		Menu.prototype.render = function(){
+			var result = "<ul class='"+this.className+"' id='"+this.id+"'>";
+			for(var item in this.items){
+				if(this.items[item] instanceof SubMenu) {
+						result += this.items[item].render();
+					} else if(this.items[item] instanceof MenuItem){
+							result += this.items[item].render();
+						}
+			} 
+			result += "</ul>";
+			return result;
+		}
+// добавление меню в body
+
+		var menu = new Menu("my_menu", "My_class", m_items);
+		var div = document.write(menu.render());
+
+		// menu.remove();
+
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
