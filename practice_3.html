@@ -1,14 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 	<meta charset="UTF-8">
 	<title>JS_2</title>
+	<style>
+		input {
+			margin-top: 10px;
+		}
+		.error {
+			border-color: red;
+		}
+	</style>
 </head>
 <body>
+	<form action="#">
+    <input type="text" name="name"><span>Ваше имя</span><br>    
+		<input type="text" name="telefon"><span>Ваш телефон</span><br>
+		<input type="text" name="email"><span>Ваш E-mail</span><br>
+		<input type="button" onclick="valid(this.form)" value="Проверить">
+	</form>
 	<script>
-	var reg = /( ')|('\W)|('$)|(\B')/gi;
-	var str = "slkdslkfdsl: 'dsdasdsadasds'd sfasd sfdsSDSA'";
-	console.log(str.replace(reg, '"'));
+		// 1-2
+
+		var reg = /( ')|('\W)|('$)|(\B')/gi;
+		var str = "slkdslkfdsl: 'dsdasdsadasds'd sfasd sfdsSDSA'";
+		console.log(str.replace(reg, '"'));
+
+		// 3
+
+		function error(container, errorMessage) {
+      container.className = 'error';
+      var msgElem = document.createElement('span');
+      msgElem.className = "error-message";
+      msgElem.innerHTML = errorMessage;
+      container.parentNode.insertBefore(msgElem, container.nextSibling);
+    }
+
+    function clearError(container) {
+      container.className = '';
+      if (container.nextSibling.className == "error-message") {
+        container.nextSibling.remove();
+      }
+    }
+
+    function valid(form) {
+      var elements = form.elements;
+      var rightName = /[а-яёъь]+$/gi;
+      var rightTelefon = /\+7\(\d{3}\)\d{3}\-\d{4}/gi;
+      var rightEmail = /\S+@[a-z0-9]+\.\w{2,3}/gi;
+
+      clearError(elements.name);
+      // console.log(rightName.test(elements.name.value));
+        if (!rightName.test(elements.name.value)) {
+        error(elements.name, ' Укажите правильно: ');
+      }
+
+      clearError(elements.telefon);
+      if (!rightTelefon.test(elements.telefon.value)) {
+        error(elements.telefon, ' Укажите правильно: ');
+      }
+
+      clearError(elements.email);
+      if (!rightEmail.test(elements.email.value)) {
+        error(elements.email, ' Укажите правильно: ');
+      }
+    }
+
+    
 	</script>
 </body>
 </html>
