@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Домашние животные</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<style>
+	body {
+		background-color: lightgrey;
+	}
+	#img {
+		float: left;
+
+		margin: 50px 100px 50px 50px;
+		
+		overflow: visible;
+	}
+	img {
+		position: fixed;
+	}
+	#menu {
+		float: right;
+		margin: 30px 0 0 50px;
+		height: 30px;
+		width: 200px;
+		border: 2px solid black;
+		border-radius: 10px 10px 0 0;
+		background-color: lightblue;
+		text-align: center;
+	}
+	.show_menu {
+		color: black;
+		font-size: 25px;
+		/*margin-bottom: 40px;*/
+	}
+	.breeds {
+		margin-top: 5px;
+		height: 20px;
+		width: 200px;
+		border: 2px solid black;
+		border-radius: 5px;
+		background-color: lightblue;
+		text-align: center;
+		font-size: 20px;
+	}
+</style>
+<body>
+	<script>
+		$(document).ready(function() {
+			$(".show_menu").click(function() {
+				$.ajax({
+					url: 'https://dog.ceo/api/breeds/list/all',
+					complete: function(data) {
+						// console.log(data.responseJSON.message);
+						var breed = data.responseJSON.message;
+						for (var key in breed) {
+							$("#menu").append("<div class='breeds'>" + key + "</div>");
+						};
+						$(".breeds").click(function() {
+							$("#img").html("");
+							$.ajax({
+								url: 'https://dog.ceo/api/breed/' + $(this).html() +'/images/random',
+								complete: function(data) {
+									console.log(data.responseJSON.message);
+									var imgBreedSrc = data.responseJSON.message;
+									$("#img").append("<img>");
+									$("#img img").attr('src', imgBreedSrc);
+								}
+							})
+						})
+					}
+				})
+			})
+			
+		})
+		
+	</script>
+	<div id="img"></div>
+	<div id="menu">
+		<span class="show_menu">Меню</span>
+	</div>
+</body>
+</html>
