@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>SHOP-CART</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+ <body cz-shortcut-listen="true">
+  <div class="cart"></div>
+  <div class="total"></div>
+
+  <input type="text" id="product-input" placeholder="Название товара">
+  <input type="text" id="price-input" placeholder="Цена">
+  <button id="add-button">Добавить в корзину</button>
+
+  <script type="text/javascript">
+    var baseUrl = 'http://212.92.98.105'
+    var user_id
+
+    $.ajax({
+      url: baseUrl + '/shop',
+      success: function(data) {
+        console.log(data)
+
+        user_id = data.user_id
+      }
+    })
+
+    $('#add-button').click(function() {
+      var product = $('#product-input').val();
+      console.log(product);
+      var price = +$('#price-input').val()
+
+      $.ajax({
+        url: baseUrl + '/shop?user_id=' + user_id + '&product=' + product + '&price=' + price,
+        type: 'post',
+        success: function(data) {
+          console.log(data)
+
+          $('<div/>', {
+            class: 'product', 
+            text: product + ' | ' + price + ' | удалить',
+            product_id: data.product_id,
+            product: product,
+            price: price,
+
+            click: function() {
+              product_id = data.product_id
+              // alert('Вы нажали на товар в корзине')
+              $.ajax({
+                url: baseUrl + '/shop?user_id=' + user_id + '&product_id=' + product_id,
+                type: 'delete',
+                success: function(data) {
+                  console.log(data);
+                  $('.product[product_id=' + product_id + '').remove();
+                  $total.html(+$total.html() - price);
+                }
+              })
+            }
+          }).appendTo('.cart')
+
+
+
+          var $total = $('.total')
+
+          $total.html(+$total.html() + price)
+        }
+      })
+    })
+  </script>
+
+<div class="__disk_root__" style="position: static;"></div>
+</body>
+
+</html>
+
+
+</body>
+</html>
