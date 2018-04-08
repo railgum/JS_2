@@ -16,31 +16,36 @@
   <script type="text/javascript">
     var baseUrl = 'http://212.92.98.105';
     var comment_id;
-
+    var likesCounter;
+// вывод комментариев
     $.ajax({
       url: baseUrl + '/comments',
-      complete: function(data) {
-        console.log(data);
-        comment_id = data.comment_id;
-        var showComment = data.responseJSON;
-        for(var key in showComment) {
-          $('<span/>', {
-            class: 'comment', 
-            text: showComment[key].text, //+ ' |  удалить',
-            comment_id: data.comment_id
-          }).appendTo('.comments').after('<span class"like">Лайкнуть</span><br/>');
-
-          $('.like').on('click', function() {
-            console.log($(this).comment_id)
-          })
-        };
-        
-      }  
+      success: function(data) {
+        // console.log(data);
+        for(var key in data) {
+          // console.log(data[key].comment_id)
+          $('<div/>', {
+            class: 'comment ' + key, 
+            text: data[key].text
+          }).appendTo('.comments')//.after('<button class="del" value="' + data[key].comment_id + '">Удалить</button>').after('<button class="like "' + key + ' value="' + data[key].comment_id + '">Нравится</button>')
+        }
+      }
     })
+// лайк коммента
+        $('.comment').after('<button class="like">Нравится</button>');
+            // $.ajax({
+            //   url: baseUrl + '/comments?comment_id=' + comment_id,
+            //   type: 'post',
+            //   success: function(data) {
+            //     // console.log(data);
+            //   }
+            // })  
 
+
+  
+// добавление комментария
     $('#add-button').click(function() {
       var text = $('#comment-input').val();
-    //   console.log(product);
 
       $.ajax({
         url: baseUrl + '/comments?text=' + text,
@@ -48,34 +53,19 @@
         success: function(data) {
           console.log(data)
 
-          $('<div/>', {
-            class: 'comment', 
-            text: text + ' |  удалить',
-            comment_id: data.comment_id
-
-    //         click: function() {
-    //           product_id = data.product_id
-    //           // alert('Вы нажали на товар в корзине')
-    //           $.ajax({
-    //             url: baseUrl + '/shop?comment_id=' + comment_id + '&product_id=' + product_id,
-    //             type: 'delete',
-    //             success: function(data) {
-    //               console.log(data);
-    //               $('.product[product_id=' + product_id + '').remove();
-    //               $total.html(+$total.html() - price);
-    //             }
-    //           })
-    //         }
-          }).appendTo('.comments')
-
-
-
-    //       var $total = $('.total')
-
-    //       $total.html(+$total.html() + price)
+          // 
         }
       })
     })
+    
+// удаление комментариев
+    // $.ajax({
+    //   url: baseUrl + '/comments?comment_id=_1gtbcnde4',
+    //   type: 'post',
+    //   success: function(data) {
+    //     console.log(data); 
+    //   }
+    // })
   </script>
 
 <div class="__disk_root__" style="position: static;"></div>

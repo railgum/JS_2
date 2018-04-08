@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>JS_2_6</title>
+	<link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.min.css">
+	<script src="jquery-ui-1.12.1.custom/external/jquery/jquery.js"></script>
+	<script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+	<script>
+		var baseUrl = 'http://212.92.98.105'
+    var user_id
+
+    $.ajax({
+      url: baseUrl + '/shop',
+      success: function(data) {
+        console.log(data);
+
+        user_id = data.user_id;
+      }
+    })
+
+		$(function() {
+			$('#tabs').tabs();
+			$('.product').draggable({
+				helper: 'clone',
+				stop: function() {
+					var price = +$(this).find('p:nth-child(3)').text();
+					var product = $(this).find('p:nth-child(1)').text();
+					$.ajax({
+        		url: baseUrl + '/shop?user_id=' + user_id + '&product=' + product + '&price=' + price,
+        		type: 'post',
+        		success: function(data) {
+          		// console.log(data)
+// создание div с добавленным товаром
+		          $('<div/>', {
+		            class: 'selectProduct', 
+		            text: product,
+		            product_id: data.product_id,
+		            product: product,
+		            price: price,
+// удаление при нажатии на товар в корзине
+            		click: function() {
+              		product_id = data.product_id
+              // alert('Вы нажали на товар в корзине')
+              		$.ajax({
+               			url: baseUrl + '/shop?user_id=' + user_id + '&product_id=' + product_id,
+                		type: 'delete',
+                		success: function(data) {
+                  		console.log(data);
+                  		$('.product[product_id=' + product_id + '').remove();
+                  		$total.html(+$total.html() - price);
+                		}
+              		})
+            		}
+          		}).appendTo('.cart')
+
+		      		var $total = $('.total')
+
+          		$total.html(+$total.html() + price)
+						}
+					});
+				}
+			})
+
+			$('#product-input').droppable({
+				drop: function() {
+					$(this).attr('placeholder', 'Товар в корзине');
+
+				}
+			})
+		})
+	
+</script>
+
+<style>
+
+	.product {
+		margin: 50px 20px;
+		height: 120px;
+		width: 150px;
+		background-color: lightpink;
+		border-radius: 5px;
+		text-align: center;
+		/*padding-top: 10px;*/
+		font-weight: bold;
+		float: left;
+	}
+	
+	.product:nth-child {
+		/*float: right;*/
+		height: 20px;
+		width: 50px;
+		background-color: wait;
+		border: 1px solid black;
+	}
+	#product-input {
+		clear: both;
+		height: 200px;
+		width: 200px;
+		margin-left: 100px;
+		text-align: center;
+		font: bold 20px fantasy;
+		background-color: yellow;
+	}
+
+	#price-input {
+		height: 20px;
+		font: 1em fantasy;
+	}
+	.cart {
+		margin-top: 50px;
+		font: 15px sans-serif;
+	}
+	.selectProduct {
+		margin-top: 5px;
+	}
+	#total {
+		/*float: left;*/
+		font: bold 25px sans-serif;
+		margin: 50px 50px 50px 400px;
+	}
+	.total {
+		margin-left: 20px;
+	}
+</style>
+</head>
+
+
+<body>
+	<div id="tabs">
+		<ul>
+			<li><a href="#type-1">Тип 1</a></li>
+			<li><a href="#type-2">Тип 2</a></li>
+			<li><a href="#type-3">Тип 3</a></li>
+		</ul>
+	
+		<div id="type-1">
+			<div class="product">
+				<p>Изделие</p>
+				<p>Цена: </p>
+				<p>1000</p>
+			</div>
+			<div class="product">
+				<p>Изделие</p>
+				<p>Цена: </p>
+				<p>800</p>
+			</div>
+			<div class="product">
+				<p>Изделие</p>
+				<p>Цена: </p>
+				<p>560</p>
+			</div>
+		</div>
+		<div id="type-2">
+			<div class="product">
+				<p>Изделие</p>
+				<p>Цена: </p>
+				<p>680</p>
+			</div>
+			<div class="product">
+				<p>Изделие</p>
+				<p>Цена: </p>
+				<p>1600</p>
+			</div>
+			<div class="product">
+				<p>Изделие</p>
+				<p>Цена: </p>
+				<p>700</p>
+			</div>
+		</div>
+		<div id="type-3">
+			<div class="product">
+				<p>Изделие</p>
+				<p>Цена: </p>
+				<p>950</p>
+			</div>
+			<div class="product">
+				<p>Изделие</p>
+				<p>Цена: </p>
+				<p>4530</p>
+			</div>
+			<div class="product">
+				<p>Изделие</p>
+				<p>Цена: </p>
+				<p>880</p>
+			</div>
+		</div>
+	</div>
+
+  <input type="text" id="product-input" placeholder="Корзина">
+  <input type="text" id="price-input" placeholder="Цена">
+  <button id="add-button">Добавить в корзину</button>
+	<div class="cart"></div>
+  <div id="total">Итого:<span class="total"></span></div>
+</body>
+</html>
