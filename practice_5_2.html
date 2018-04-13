@@ -21,7 +21,7 @@
     $.ajax({
       url: baseUrl + '/comments',
       success: function(data) {
-        // console.log(data);
+        console.log(data);
         for(var key in data) {
           // console.log(data[key].comment_id)
           $('<div/>', {
@@ -51,7 +51,7 @@
         url: baseUrl + '/comments?text=' + text,
         type: 'post',
         success: function(data) {
-          console.log(data)
+          // console.log(data)
 
           // 
         }
